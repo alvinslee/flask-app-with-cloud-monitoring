@@ -8,12 +8,20 @@ sudo pip3 install Flask
 
 # Set up the Flask application
 cat <<EOF > /home/ubuntu/app.py
+import json
+import logging
+
 from flask import Flask
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    logger.info("This is a log message.")
+    return {'message': 'Hello, World!'}, 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
@@ -27,7 +35,7 @@ Description=Flask Application
 [Service]
 ExecStart=/usr/bin/python3 /home/ubuntu/app.py
 WorkingDirectory=/home/ubuntu
-User=ubuntu
+User=root
 Restart=always
 
 [Install]

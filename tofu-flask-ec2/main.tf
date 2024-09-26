@@ -53,6 +53,7 @@ resource "aws_instance" "flask_instance" {
   vpc_security_group_ids      = [aws_security_group.flask_sg.id]
   key_name                    = aws_key_pair.ec2_instance_key_pair.id
   associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name
 
   user_data = file("${path.module}/scripts/setup.sh")
 
@@ -95,9 +96,4 @@ resource "aws_iam_role_policy_attachment" "ec2_cloudwatch_policy" {
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "ec2_instance_profile"
   role = aws_iam_role.ec2_role.name
-}
-
-# Attach the IAM instance profile to EC2 instance
-resource "aws_instance" "flask_instance" {
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 }

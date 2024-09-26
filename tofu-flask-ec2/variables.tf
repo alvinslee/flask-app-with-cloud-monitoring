@@ -26,6 +26,12 @@ variable "log_retention_days" {
   default     = 7
 }
 
+variable "instance_name" {
+  description = "Name of the EC2 instance"
+  type        = string
+  default     = "FlaskAppInstance"
+}
+
 variable "aws_access_key" {}
 
 variable "aws_secret_key" {}

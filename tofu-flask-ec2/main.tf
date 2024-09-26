@@ -1,5 +1,18 @@
-provider "aws" {
-  region = var.region
+# SSH Key Configuration
+resource "tls_private_key" "ec2_instance_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+# Generate a Private Key and encode it as PEM.
+resource "aws_key_pair" "ec2_instance_key_pair" {
+  key_name   = "${replace(lower(var.instance_name), " ", "-")}_key"
+  public_key = tls_private_key.ec2_instance_key.public_key_openssh
+
+  provisioner "local-exec" {
+    command     = "echo '${tls_private_key.ec2_instance_key.private_key_pem}' > ./ec2_instance_key.pem"
+    interpreter = ["pwsh", "-Command"]
+  }
 }
 
 # Security group for Flask instance
@@ -38,7 +51,7 @@ resource "aws_instance" "flask_instance" {
   ami                         = var.ami_id
   instance_type               = var.instance_type
   vpc_security_group_ids      = [aws_security_group.flask_sg.id]
-  key_name                    = var.key_pair
+  key_name                    = aws_key_pair.ec2_instance_key_pair.id
   associate_public_ip_address = true
 
   user_data = file("${path.module}/scripts/setup.sh")

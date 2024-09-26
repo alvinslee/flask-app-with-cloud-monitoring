@@ -38,7 +38,8 @@ sudo systemctl enable flask-app
 sudo systemctl start flask-app
 
 # Install and configure CloudWatch agent
-sudo apt install -y amazon-cloudwatch-agent
+sudo wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 cat <<EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json
 {
   "agent": {

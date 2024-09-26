@@ -1,7 +1,7 @@
 #!/bin/bash
 # Update the instance and install necessary packages
 sudo apt update
-sudo apt install -y python3 git
+sudo apt install -y python3 python3-pip git
 
 # Install Flask
 sudo pip3 install Flask
@@ -25,7 +25,7 @@ cat <<EOF | sudo tee /etc/systemd/system/flask-app.service
 Description=Flask Application
 
 [Service]
-ExecStart=/usr/bin/python3 /home/ubunut/app.py
+ExecStart=/usr/bin/python3 /home/ubuntu/app.py
 WorkingDirectory=/home/ubuntu
 User=ubuntu
 Restart=always

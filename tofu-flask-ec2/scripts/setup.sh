@@ -1,13 +1,13 @@
 #!/bin/bash
 # Update the instance and install necessary packages
-sudo yum update -y
-sudo yum install -y python3 git
+sudo apt update
+sudo apt install -y python3 git
 
 # Install Flask
 sudo pip3 install Flask
 
 # Set up the Flask application
-cat <<EOF > /home/ec2-user/app.py
+cat <<EOF > /home/ubuntu/app.py
 from flask import Flask
 app = Flask(__name__)
 
@@ -25,9 +25,9 @@ cat <<EOF | sudo tee /etc/systemd/system/flask-app.service
 Description=Flask Application
 
 [Service]
-ExecStart=/usr/bin/python3 /home/ec2-user/app.py
-WorkingDirectory=/home/ec2-user
-User=ec2-user
+ExecStart=/usr/bin/python3 /home/ubunut/app.py
+WorkingDirectory=/home/ubuntu
+User=ubuntu
 Restart=always
 
 [Install]
@@ -38,7 +38,7 @@ sudo systemctl enable flask-app
 sudo systemctl start flask-app
 
 # Install and configure CloudWatch agent
-sudo yum install -y amazon-cloudwatch-agent
+sudo apt install -y amazon-cloudwatch-agent
 cat <<EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json
 {
   "agent": {

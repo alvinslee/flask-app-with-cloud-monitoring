@@ -13,14 +13,14 @@ import logging
 
 from flask import Flask
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename='/var/log/flask-app.log', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    logger.info("This is a log message.")
+    logger.info("A request was received at the root URL")
     return {'message': 'Hello, World!'}, 200
 
 if __name__ == '__main__':
@@ -52,7 +52,8 @@ cat <<EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json
 {
   "agent": {
     "metrics_collection_interval": 60,
-    "logfile": "/var/log/amazon-cloudwatch-agent.log"
+    "logfile": "/var/log/amazon-cloudwatch-agent.log",
+    "run_as_user": "root"
   },
   "logs": {
     "logs_collected": {
@@ -69,6 +70,18 @@ cat <<EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json
             "log_group_name": "/aws/ec2/flask-app",
             "log_stream_name": "{instance_id}/cloud-init",
             "timezone": "UTC"
+          },
+          {
+            "file_path": "/var/log/cloud-init-output.log",
+            "log_group_name": "/aws/ec2/flask-app",
+            "log_stream_name": "{instance_id}/cloud-init-output",
+            "timezone": "UTC"
+          },
+          {
+            "file_path": "/var/log/flask-app.log",
+            "log_group_name": "/aws/ec2/flask-app",
+            "log_stream_name": "{instance_id}/flask-app",
+            "timezone": "UTC"
           }
         ]
       }
@@ -78,3 +91,4 @@ cat <<EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/bin/config.json
 EOF
 
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a start
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:///opt/aws/amazon-cloudwatch-agent/bin/config.json

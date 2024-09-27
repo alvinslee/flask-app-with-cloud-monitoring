@@ -14,7 +14,7 @@ data "template_cloudinit_config" "setup-script" {
   part {
     content_type = "text/x-shellscript"
     content = templatefile("${path.module}/scripts/setup.sh", {
-      aws_region      = var.region,
+      aws_region = var.region,
     })
   }
 }

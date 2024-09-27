@@ -15,11 +15,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "key_pair" {
-  description = "SSH key pair for access to EC2 instance"
-  type        = string
-}
-
 variable "log_retention_days" {
   description = "Number of days to retain logs in CloudWatch"
   type        = number

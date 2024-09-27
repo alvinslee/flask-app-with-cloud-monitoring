@@ -55,7 +55,7 @@ resource "aws_instance" "flask_instance" {
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name
 
-  user_data = file("${path.module}/scripts/setup.sh")
+  user_data = data.template_cloudinit_config.setup-script.rendered
 
   tags = {
     Name = "FlaskAppInstance"
@@ -90,6 +90,11 @@ resource "aws_iam_role" "ec2_role" {
 resource "aws_iam_role_policy_attachment" "ec2_cloudwatch_policy" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_metrics_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
 }
 
 # IAM instance profile for EC2

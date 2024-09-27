@@ -11,3 +11,12 @@ Simple project for creating a small ec2 instance with cloudwatch monitoring.
 
 *NOTE:* This runs the service in development mode as *root*. You really
 shouldn't do that. *Use at your own risk.*
+
+## Usage
+
+`curl http://<dns-name-from-output>/` should return some JSON. Look in the
+CloudWatch dashboard for the metrics and logs.
+
+## Tear Down
+
+Run `tofu destroy` to clean up cloud resources in AWS.

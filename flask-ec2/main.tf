@@ -58,7 +58,7 @@ resource "aws_instance" "flask_instance" {
   user_data = data.template_cloudinit_config.setup-script.rendered
 
   tags = {
-    Name = "FlaskAppInstance"
+    Name = var.instance_name
   }
 
   monitoring = true
